@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SixConsole.Profile/SixConsole.Profile.csproj" />
+    <Project Path="src/SixConsole.Tests/SixConsole.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,1388 @@
+{
+  "operators": [
+    {
+      "name": "Striker",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-001-w1",
+          "name": "M4",
+          "pull": 38,
+          "rapidFire": false
+        },
+        {
+          "id": "op-001-w2",
+          "name": "M249",
+          "pull": 32,
+          "rapidFire": false
+        },
+        {
+          "id": "op-001-w3",
+          "name": "SR-25",
+          "pull": 155,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-001"
+    },
+    {
+      "name": "Sledge",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-002-w1",
+          "name": "L85A2",
+          "pull": 35,
+          "rapidFire": false
+        },
+        {
+          "id": "op-002-w2",
+          "name": "Reaper Mk2 (Sec)",
+          "pull": 31,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-002"
+    },
+    {
+      "name": "Thatcher",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-003-w1",
+          "name": "L85A2",
+          "pull": 35,
+          "rapidFire": false
+        },
+        {
+          "id": "op-003-w2",
+          "name": "AR33",
+          "pull": 40,
+          "rapidFire": false
+        },
+        {
+          "id": "op-003-w3",
+          "name": "PMR90A2",
+          "pull": 76,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-003"
+    },
+    {
+      "name": "Ash",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-004-w1",
+          "name": "R4-C",
+          "pull": 50,
+          "rapidFire": false
+        },
+        {
+          "id": "op-004-w2",
+          "name": "G36C",
+          "pull": 49,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-004"
+    },
+    {
+      "name": "Thermite",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-005-w1",
+          "name": "556xi",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-005"
+    },
+    {
+      "name": "Twitch",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-006-w1",
+          "name": "F2",
+          "pull": 58,
+          "rapidFire": false
+        },
+        {
+          "id": "op-006-w2",
+          "name": "417",
+          "pull": 90,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-006"
+    },
+    {
+      "name": "Monty",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-007-w1",
+          "name": "P9",
+          "pull": 41,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-007"
+    },
+    {
+      "name": "Fuze",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-008-w1",
+          "name": "AK-12",
+          "pull": 42,
+          "rapidFire": false
+        },
+        {
+          "id": "op-008-w2",
+          "name": "6P41",
+          "pull": 52,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-008"
+    },
+    {
+      "name": "Glaz",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-009-w1",
+          "name": "OTs-03",
+          "pull": 180,
+          "rapidFire": true
+        },
+        {
+          "id": "op-009-w2",
+          "name": "Bearing 9 (Sec)",
+          "pull": 49,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-009"
+    },
+    {
+      "name": "Blitz",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-010-w1",
+          "name": "P12",
+          "pull": 65,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-010"
+    },
+    {
+      "name": "IQ",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-011-w1",
+          "name": "552 Commando",
+          "pull": 33,
+          "rapidFire": false
+        },
+        {
+          "id": "op-011-w2",
+          "name": "AUG A2",
+          "pull": 35,
+          "rapidFire": false
+        },
+        {
+          "id": "op-011-w3",
+          "name": "G8A1",
+          "pull": 47,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-011"
+    },
+    {
+      "name": "Buck",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-012-w1",
+          "name": "C8-SFW",
+          "pull": 42,
+          "rapidFire": false
+        },
+        {
+          "id": "op-012-w2",
+          "name": "CAMRS",
+          "pull": 110,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-012"
+    },
+    {
+      "name": "Blackbeard",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-013-w1",
+          "name": "Mk17 CQB",
+          "pull": 22,
+          "rapidFire": false
+        },
+        {
+          "id": "op-013-w2",
+          "name": "SR-25",
+          "pull": 155,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-013"
+    },
+    {
+      "name": "Capitao",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-014-w1",
+          "name": "PARA-308",
+          "pull": 31,
+          "rapidFire": false
+        },
+        {
+          "id": "op-014-w2",
+          "name": "M249",
+          "pull": 32,
+          "rapidFire": false
+        },
+        {
+          "id": "op-014-w3",
+          "name": "PMR90A2",
+          "pull": 76,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-014"
+    },
+    {
+      "name": "Hibana",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-015-w1",
+          "name": "Type-89",
+          "pull": 49,
+          "rapidFire": false
+        },
+        {
+          "id": "op-015-w2",
+          "name": "PMR90A2",
+          "pull": 76,
+          "rapidFire": true
+        },
+        {
+          "id": "op-015-w3",
+          "name": "Bearing 9 (Sec)",
+          "pull": 49,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-015"
+    },
+    {
+      "name": "Jackal",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-016-w1",
+          "name": "C7E",
+          "pull": 58,
+          "rapidFire": false
+        },
+        {
+          "id": "op-016-w2",
+          "name": "PDW9",
+          "pull": 35,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-016"
+    },
+    {
+      "name": "Ying",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-017-w1",
+          "name": "T-95 LSW",
+          "pull": 41,
+          "rapidFire": false
+        },
+        {
+          "id": "op-017-w2",
+          "name": "Reaper Mk2 (Sec)",
+          "pull": 31,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-017"
+    },
+    {
+      "name": "Zofia",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-018-w1",
+          "name": "M762",
+          "pull": 41,
+          "rapidFire": false
+        },
+        {
+          "id": "op-018-w2",
+          "name": "LMG-E",
+          "pull": 55,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-018"
+    },
+    {
+      "name": "Dokkaebi",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-019-w1",
+          "name": "XK23",
+          "pull": 37,
+          "rapidFire": false
+        },
+        {
+          "id": "op-019-w2",
+          "name": "Mk 14 EBR",
+          "pull": 86,
+          "rapidFire": true
+        },
+        {
+          "id": "op-019-w3",
+          "name": "SMG-12 (Sec)",
+          "pull": 47,
+          "rapidFire": false
+        },
+        {
+          "id": "op-019-w4",
+          "name": "C75 Auto (Sec)",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-019"
+    },
+    {
+      "name": "Lion",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-020-w1",
+          "name": "V308",
+          "pull": 36,
+          "rapidFire": false
+        },
+        {
+          "id": "op-020-w2",
+          "name": "417",
+          "pull": 90,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-020"
+    },
+    {
+      "name": "Finka",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-021-w1",
+          "name": "Spear .308",
+          "pull": 45,
+          "rapidFire": false
+        },
+        {
+          "id": "op-021-w2",
+          "name": "6P41",
+          "pull": 52,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-021"
+    },
+    {
+      "name": "Maverick",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-022-w1",
+          "name": "M4",
+          "pull": 38,
+          "rapidFire": false
+        },
+        {
+          "id": "op-022-w2",
+          "name": "AR-15.50",
+          "pull": 81,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-022"
+    },
+    {
+      "name": "Nomad",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-023-w1",
+          "name": "AK-74M",
+          "pull": 25,
+          "rapidFire": false
+        },
+        {
+          "id": "op-023-w2",
+          "name": "ARX200",
+          "pull": 40,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-023"
+    },
+    {
+      "name": "Gridlock",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-024-w1",
+          "name": "F90 SBR",
+          "pull": 42,
+          "rapidFire": false
+        },
+        {
+          "id": "op-024-w2",
+          "name": "M249 SAW",
+          "pull": 43,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-024"
+    },
+    {
+      "name": "Nokk",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-025-w1",
+          "name": "FMG-9",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-025"
+    },
+    {
+      "name": "Amaru",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-026-w1",
+          "name": "G8A1",
+          "pull": 47,
+          "rapidFire": false
+        },
+        {
+          "id": "op-026-w2",
+          "name": "SMG-11 (Sec)",
+          "pull": 45,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-026"
+    },
+    {
+      "name": "Kali",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-027-w1",
+          "name": "SPSMG9 (Sec)",
+          "pull": 26,
+          "rapidFire": false
+        },
+        {
+          "id": "op-027-w2",
+          "name": "C75 Auto (Sec)",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-027"
+    },
+    {
+      "name": "Iana",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-028-w1",
+          "name": "ARX200",
+          "pull": 40,
+          "rapidFire": false
+        },
+        {
+          "id": "op-028-w2",
+          "name": "G36C",
+          "pull": 49,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-028"
+    },
+    {
+      "name": "Ace",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-029-w1",
+          "name": "AK-12",
+          "pull": 42,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-029"
+    },
+    {
+      "name": "Zero",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-030-w1",
+          "name": "SC3000K",
+          "pull": 57,
+          "rapidFire": false
+        },
+        {
+          "id": "op-030-w2",
+          "name": "MP7",
+          "pull": 45,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-030"
+    },
+    {
+      "name": "Flores",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-031-w1",
+          "name": "AR33",
+          "pull": 40,
+          "rapidFire": false
+        },
+        {
+          "id": "op-031-w2",
+          "name": "T-95 LSW",
+          "pull": 41,
+          "rapidFire": false
+        },
+        {
+          "id": "op-031-w3",
+          "name": "SR-25",
+          "pull": 155,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-031"
+    },
+    {
+      "name": "Osa",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-032-w1",
+          "name": "556xi",
+          "pull": 33,
+          "rapidFire": false
+        },
+        {
+          "id": "op-032-w2",
+          "name": "PDW9",
+          "pull": 35,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-032"
+    },
+    {
+      "name": "Sens",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-033-w1",
+          "name": "XK23",
+          "pull": 37,
+          "rapidFire": false
+        },
+        {
+          "id": "op-033-w2",
+          "name": "POF-9",
+          "pull": 35,
+          "rapidFire": false
+        },
+        {
+          "id": "op-033-w3",
+          "name": "417",
+          "pull": 90,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-033"
+    },
+    {
+      "name": "Grim",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-034-w1",
+          "name": "552 Commando",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-034"
+    },
+    {
+      "name": "Brava",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-035-w1",
+          "name": "PARA-308",
+          "pull": 31,
+          "rapidFire": false
+        },
+        {
+          "id": "op-035-w2",
+          "name": "CAMRS",
+          "pull": 110,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-035"
+    },
+    {
+      "name": "Ram",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-036-w1",
+          "name": "R4-C",
+          "pull": 50,
+          "rapidFire": false
+        },
+        {
+          "id": "op-036-w2",
+          "name": "LMG-E",
+          "pull": 55,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-036"
+    },
+    {
+      "name": "Deimos",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-037-w1",
+          "name": "AK-74M",
+          "pull": 25,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-037"
+    },
+    {
+      "name": "Rauora",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-038-w1",
+          "name": "XK23",
+          "pull": 37,
+          "rapidFire": false
+        },
+        {
+          "id": "op-038-w2",
+          "name": "417",
+          "pull": 90,
+          "rapidFire": true
+        },
+        {
+          "id": "op-038-w3",
+          "name": "M249",
+          "pull": 32,
+          "rapidFire": false
+        },
+        {
+          "id": "op-038-w4",
+          "name": "Reaper Mk2 (Sec)",
+          "pull": 31,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-038"
+    },
+    {
+      "name": "Solid Snake",
+      "side": "ATK",
+      "weapons": [
+        {
+          "id": "op-039-w1",
+          "name": "F2",
+          "pull": 58,
+          "rapidFire": false
+        },
+        {
+          "id": "op-039-w2",
+          "name": "PMR90A2",
+          "pull": 76,
+          "rapidFire": true
+        }
+      ],
+      "id": "op-039"
+    },
+    {
+      "name": "Sentry",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-040-w1",
+          "name": "Tcsg12",
+          "pull": 360,
+          "rapidFire": true
+        },
+        {
+          "id": "op-040-w2",
+          "name": "Commando 9",
+          "pull": 28,
+          "rapidFire": false
+        },
+        {
+          "id": "op-040-w3",
+          "name": "C75 Auto (Sec)",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-040"
+    },
+    {
+      "name": "Smoke",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-041-w1",
+          "name": "SMG-11 (Sec)",
+          "pull": 45,
+          "rapidFire": false
+        },
+        {
+          "id": "op-041-w2",
+          "name": "FMG-9",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-041"
+    },
+    {
+      "name": "Mute",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-042-w1",
+          "name": "SMG-11 (Sec)",
+          "pull": 45,
+          "rapidFire": false
+        },
+        {
+          "id": "op-042-w2",
+          "name": "MP5K",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-042"
+    },
+    {
+      "name": "Castle",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-043-w1",
+          "name": "UMP45",
+          "pull": 15,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-043"
+    },
+    {
+      "name": "Pulse",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-044-w1",
+          "name": "Reaper Mk2 (Sec)",
+          "pull": 31,
+          "rapidFire": false
+        },
+        {
+          "id": "op-044-w2",
+          "name": "UMP45",
+          "pull": 15,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-044"
+    },
+    {
+      "name": "Doc",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-045-w1",
+          "name": "MP5",
+          "pull": 24,
+          "rapidFire": false
+        },
+        {
+          "id": "op-045-w2",
+          "name": "P90",
+          "pull": 29,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-045"
+    },
+    {
+      "name": "Rook",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-046-w1",
+          "name": "MP5",
+          "pull": 24,
+          "rapidFire": false
+        },
+        {
+          "id": "op-046-w2",
+          "name": "P90",
+          "pull": 29,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-046"
+    },
+    {
+      "name": "Kapkan",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-047-w1",
+          "name": "9x19VSN",
+          "pull": 25,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-047"
+    },
+    {
+      "name": "Tachanka",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-048-w1",
+          "name": "9x19VSN",
+          "pull": 25,
+          "rapidFire": false
+        },
+        {
+          "id": "op-048-w2",
+          "name": "DP27",
+          "pull": 27,
+          "rapidFire": false
+        },
+        {
+          "id": "op-048-w3",
+          "name": "Bearing 9 (Sec)",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-048"
+    },
+    {
+      "name": "Jager",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-049-w1",
+          "name": "416-C Carbine",
+          "pull": 25,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-049"
+    },
+    {
+      "name": "Bandit",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-050-w1",
+          "name": "MP7",
+          "pull": 29,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-050"
+    },
+    {
+      "name": "Frost",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-051-w1",
+          "name": "9mm C1",
+          "pull": 18,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-051"
+    },
+    {
+      "name": "Valkyrie",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-052-w1",
+          "name": "MPX",
+          "pull": 24,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-052"
+    },
+    {
+      "name": "Caveira",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-053-w1",
+          "name": "M12",
+          "pull": 19,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-053"
+    },
+    {
+      "name": "Echo",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-054-w1",
+          "name": "MP5SD",
+          "pull": 24,
+          "rapidFire": false
+        },
+        {
+          "id": "op-054-w2",
+          "name": "Bearing 9 (Sec)",
+          "pull": 49,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-054"
+    },
+    {
+      "name": "Mira",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-055-w1",
+          "name": "Vector .45 ACP",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-055"
+    },
+    {
+      "name": "Lesion",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-056-w1",
+          "name": "T-5 SMG",
+          "pull": 27,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-056"
+    },
+    {
+      "name": "Ela",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-057-w1",
+          "name": "Scorpion EVO 3 A1",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-057"
+    },
+    {
+      "name": "Vigil",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-058-w1",
+          "name": "K1A",
+          "pull": 27,
+          "rapidFire": false
+        },
+        {
+          "id": "op-058-w2",
+          "name": "SMG-12 (Sec)",
+          "pull": 47,
+          "rapidFire": false
+        },
+        {
+          "id": "op-058-w3",
+          "name": "C75 Auto (Sec)",
+          "pull": 34,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-058"
+    },
+    {
+      "name": "Maestro",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-059-w1",
+          "name": "ALDA 5.56",
+          "pull": 30,
+          "rapidFire": false
+        },
+        {
+          "id": "op-059-w2",
+          "name": "ACS12",
+          "pull": 17,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-059"
+    },
+    {
+      "name": "Alibi",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-060-w1",
+          "name": "Mx4 Storm",
+          "pull": 30,
+          "rapidFire": false
+        },
+        {
+          "id": "op-060-w2",
+          "name": "ACS12",
+          "pull": 17,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-060"
+    },
+    {
+      "name": "Clash",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-061-w1",
+          "name": "SPSMG9 (Sec)",
+          "pull": 27,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-061"
+    },
+    {
+      "name": "Kaid",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-062-w1",
+          "name": "Tcsg12",
+          "pull": 360,
+          "rapidFire": true
+        },
+        {
+          "id": "op-062-w2",
+          "name": "AUG A3",
+          "pull": 26,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-062"
+    },
+    {
+      "name": "Mozzie",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-063-w1",
+          "name": "P10 Roni",
+          "pull": 33,
+          "rapidFire": false
+        },
+        {
+          "id": "op-063-w2",
+          "name": "Commando 9",
+          "pull": 28,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-063"
+    },
+    {
+      "name": "Warden",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-064-w1",
+          "name": "SMG-12 (Sec)",
+          "pull": 47,
+          "rapidFire": false
+        },
+        {
+          "id": "op-064-w2",
+          "name": "MPX",
+          "pull": 24,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-064"
+    },
+    {
+      "name": "Goyo",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-065-w1",
+          "name": "Tcsg12",
+          "pull": 360,
+          "rapidFire": true
+        },
+        {
+          "id": "op-065-w2",
+          "name": "Vector .45 ACP",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-065"
+    },
+    {
+      "name": "Wamai",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-066-w1",
+          "name": "MP5K",
+          "pull": 34,
+          "rapidFire": false
+        },
+        {
+          "id": "op-066-w2",
+          "name": "AUG A2",
+          "pull": 25,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-066"
+    },
+    {
+      "name": "Oryx",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-067-w1",
+          "name": "T-5 SMG",
+          "pull": 27,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-067"
+    },
+    {
+      "name": "Melusi",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-068-w1",
+          "name": "MP5",
+          "pull": 24,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-068"
+    },
+    {
+      "name": "Aruni",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-069-w1",
+          "name": "Mk 14 EBR",
+          "pull": 86,
+          "rapidFire": true
+        },
+        {
+          "id": "op-069-w2",
+          "name": "P10 Roni",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-069"
+    },
+    {
+      "name": "Thunderbird",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-070-w1",
+          "name": "Spear .308",
+          "pull": 26,
+          "rapidFire": false
+        },
+        {
+          "id": "op-070-w2",
+          "name": "Bearing 9 (Sec)",
+          "pull": 49,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-070"
+    },
+    {
+      "name": "Thorn",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-071-w1",
+          "name": "UZK50GI",
+          "pull": 24,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-071"
+    },
+    {
+      "name": "Azami",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-072-w1",
+          "name": "9x19VSN",
+          "pull": 25,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-072"
+    },
+    {
+      "name": "Solis",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-073-w1",
+          "name": "P90",
+          "pull": 29,
+          "rapidFire": false
+        },
+        {
+          "id": "op-073-w2",
+          "name": "SMG-11 (Sec)",
+          "pull": 48,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-073"
+    },
+    {
+      "name": "Fenrir",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-074-w1",
+          "name": "MP7",
+          "pull": 29,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-074"
+    },
+    {
+      "name": "Tubarao",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-075-w1",
+          "name": "AR-15.50",
+          "pull": 81,
+          "rapidFire": true
+        },
+        {
+          "id": "op-075-w2",
+          "name": "MPX",
+          "pull": 23,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-075"
+    },
+    {
+      "name": "Denari",
+      "side": "DEF",
+      "weapons": [
+        {
+          "id": "op-076-w1",
+          "name": "Scorpion EVO 3 A1",
+          "pull": 33,
+          "rapidFire": false
+        }
+      ],
+      "id": "op-076"
+    }
+  ]
+}

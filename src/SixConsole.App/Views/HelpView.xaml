@@ -1,0 +1,55 @@
+<UserControl
+    x:Class="SixConsole.App.Views.HelpView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="16,12,16,16" VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="760" HorizontalAlignment="Left" Spacing="10">
+
+            <TextBlock Text="How this app works" Style="{StaticResource SubTitleText}"/>
+            <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap"
+                Text="Six Console replaces your Logitech recoil script. It observes the mouse with a Windows low-level hook (no administrator rights needed) and injects movement and P-key bursts with SendInput, exactly like the original script did through the Logitech layer. The app never hides itself, never touches game memory, and does nothing at all while the profile is disabled."/>
+
+            <Border Style="{StaticResource ActionCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Default controls (same as the script)" Style="{StaticResource SectionHeader}"/>
+                    <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap"
+                        Text="· Mouse button 3 (middle) — enable or disable the profile&#x0a;· Mouse button 4 (back) — previous operator (or previous weapon while Caps Lock is on)&#x0a;· Mouse button 5 (forward) — next operator (or next weapon while Caps Lock is on)&#x0a;· Hold left mouse — run recoil control / rapid fire while held&#x0a;· Caps Lock — switch buttons 4/5 between operator and weapon navigation"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ActionCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Emergency stop" Style="{StaticResource SectionHeader}"/>
+                    <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap"
+                        Text="If input ever feels stuck or runaway, click the red STOP button in the title bar. It cancels every loop, releases the rapid-fire key, and disables the profile immediately — even if the mouse hooks are malfunctioning. You can also leave the profile disabled at any time; a disabled profile injects nothing."/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ActionCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Permissions and security" Style="{StaticResource SectionHeader}"/>
+                    <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap"
+                        Text="The app needs no administrator rights on standard Windows 10/11. Some anti-cheat systems ignore or block synthetic input — in those cases the mouse moves but the game may not respond; nothing in this app attempts to evade protection systems, inject into processes, or disguise the input. Using automation tools may be against the rules of some games: check the rules yourself."/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ActionCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Troubleshooting" Style="{StaticResource SectionHeader}"/>
+                    <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap"
+                        Text="· Buttons do nothing — check that the profile is enabled (Status panel on the Profile page shows ACTIVE); press middle mouse to toggle&#x0a;· Engine shows an error — restart Six Console; if the hook install failed, another mouse tool may be holding it&#x0a;· Input works in the desktop but not in-game — the game's anti-cheat is filtering synthetic input; that cannot and will not be worked around&#x0a;· Settings lost — a malformed settings file falls back to the original script defaults; fix values and Save&#x0a;· Look at the log — see log.txt in the data folder shown on the Settings page"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ActionCard}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="About your data" Style="{StaticResource SectionHeader}"/>
+                    <TextBlock Style="{StaticResource BodyText}" TextWrapping="Wrap"
+                        Text="Six Console stores settings and a local diagnostic log under %LOCALAPPDATA%\SixConsole. It has no network access, no telemetry, and no account features."/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

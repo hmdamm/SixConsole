@@ -1,0 +1,66 @@
+# Build and compilation outputs
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+dist/
+publish/
+
+# Visual Studio & IDEs
+.vs/
+*.user
+*.userprefs
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Test results and coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.visualstudio.g.props
+*.visualstudio.g.targets
+
+# Windows App SDK / MSIX Packaging outputs
+AppPackages/
+BundleArtifacts/
+PackagePlatform/
+_pkg/
+Generated Files/
+intermediatexaml/
+
+# Local diagnostic and crash logs
+*.log
+log.txt
+app-crash.log
+
+# Temporary and cache files
+*.tmp
+*.cache
+*.suo
+*.pidb
+*.bak
+*.swp
+*~
+
+# Operating system files
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Private signing certificates and sensitive files
+*.pfx
+*.p12
+*.cer
+*.key
+*.pem
+*.token
+*.env
+*.env.*
+!*.env.example

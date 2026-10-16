@@ -1,0 +1,455 @@
+local isEnabled       = false
+local currentOpIndex  = 1
+local currentGunIndex = 1
+
+local recoilMultiplier = 0.9
+
+-- Recoil variance & 1px horizontal jitter
+local vertVariance = 1
+local horizJitter  = 1
+
+-- Universal full-auto delay range (milliseconds)
+local minDelay = 2
+local maxDelay = 5
+
+-- Rapid fire secondary key & timings (milliseconds)
+local rfKey   = "p"
+local minHold = 25
+local maxHold = 40
+local minGap  = 65
+local maxGap  = 90
+
+local function Round(num)
+    return math.floor(num + 0.5)
+end
+
+local OPERATORS = {
+    { name = "Striker", side = "ATK", guns = {
+        { name = "M4",      pull = 38,  rapidFire = false },
+        { name = "M249",    pull = 32,  rapidFire = false },
+        { name = "SR-25",   pull = 155, rapidFire = true }
+    }},
+    { name = "Sledge", side = "ATK", guns = {
+        { name = "L85A2",             pull = 35, rapidFire = false },
+        { name = "Reaper Mk2 (Sec)",  pull = 31, rapidFire = false }
+    }},
+    { name = "Thatcher", side = "ATK", guns = {
+        { name = "L85A2",   pull = 35, rapidFire = false },
+        { name = "AR33",    pull = 40, rapidFire = false },
+        { name = "PMR90A2", pull = 76, rapidFire = true }
+    }},
+    { name = "Ash", side = "ATK", guns = {
+        { name = "R4-C", pull = 50, rapidFire = false },
+        { name = "G36C", pull = 49, rapidFire = false }
+    }},
+    { name = "Thermite", side = "ATK", guns = {
+        { name = "556xi", pull = 33, rapidFire = false }
+    }},
+    { name = "Twitch", side = "ATK", guns = {
+        { name = "F2",  pull = 58, rapidFire = false },
+        { name = "417", pull = 90, rapidFire = true }
+    }},
+    { name = "Monty", side = "ATK", guns = {
+        { name = "P9", pull = 41, rapidFire = true }
+    }},
+    { name = "Fuze", side = "ATK", guns = {
+        { name = "AK-12", pull = 42, rapidFire = false },
+        { name = "6P41",  pull = 52, rapidFire = false }
+    }},
+    { name = "Glaz", side = "ATK", guns = {
+        { name = "OTs-03",         pull = 180, rapidFire = true },
+        { name = "Bearing 9 (Sec)", pull = 49,  rapidFire = false }
+    }},
+    { name = "Blitz", side = "ATK", guns = {
+        { name = "P12", pull = 65, rapidFire = true }
+    }},
+    { name = "IQ", side = "ATK", guns = {
+        { name = "552 Commando", pull = 33, rapidFire = false },
+        { name = "AUG A2",       pull = 35, rapidFire = false },
+        { name = "G8A1",         pull = 47, rapidFire = false }
+    }},
+    { name = "Buck", side = "ATK", guns = {
+        { name = "C8-SFW", pull = 42,  rapidFire = false },
+        { name = "CAMRS",  pull = 110, rapidFire = true }
+    }},
+    { name = "Blackbeard", side = "ATK", guns = {
+        { name = "Mk17 CQB", pull = 22,  rapidFire = false },
+        { name = "SR-25",    pull = 155, rapidFire = true }
+    }},
+    { name = "Capitao", side = "ATK", guns = {
+        { name = "PARA-308", pull = 31, rapidFire = false },
+        { name = "M249",     pull = 32, rapidFire = false },
+        { name = "PMR90A2",  pull = 76, rapidFire = true }
+    }},
+    { name = "Hibana", side = "ATK", guns = {
+        { name = "Type-89",        pull = 49, rapidFire = false },
+        { name = "PMR90A2",        pull = 76, rapidFire = true },
+        { name = "Bearing 9 (Sec)", pull = 49, rapidFire = false }
+    }},
+    { name = "Jackal", side = "ATK", guns = {
+        { name = "C7E",  pull = 58, rapidFire = false },
+        { name = "PDW9", pull = 35, rapidFire = false }
+    }},
+    { name = "Ying", side = "ATK", guns = {
+        { name = "T-95 LSW",         pull = 41, rapidFire = false },
+        { name = "Reaper Mk2 (Sec)", pull = 31, rapidFire = false }
+    }},
+    { name = "Zofia", side = "ATK", guns = {
+        { name = "M762",  pull = 41, rapidFire = false },
+        { name = "LMG-E", pull = 55, rapidFire = false }
+    }},
+    { name = "Dokkaebi", side = "ATK", guns = {
+        { name = "XK23",           pull = 37, rapidFire = false },
+        { name = "Mk 14 EBR",      pull = 86, rapidFire = true },
+        { name = "SMG-12 (Sec)",   pull = 47, rapidFire = false },
+        { name = "C75 Auto (Sec)", pull = 34, rapidFire = false }
+    }},
+    { name = "Lion", side = "ATK", guns = {
+        { name = "V308", pull = 36, rapidFire = false },
+        { name = "417",  pull = 90, rapidFire = true }
+    }},
+    { name = "Finka", side = "ATK", guns = {
+        { name = "Spear .308", pull = 45, rapidFire = false },
+        { name = "6P41",       pull = 52, rapidFire = false }
+    }},
+    { name = "Maverick", side = "ATK", guns = {
+        { name = "M4",       pull = 38, rapidFire = false },
+        { name = "AR-15.50", pull = 81, rapidFire = true }
+    }},
+    { name = "Nomad", side = "ATK", guns = {
+        { name = "AK-74M", pull = 25, rapidFire = false },
+        { name = "ARX200", pull = 40, rapidFire = false }
+    }},
+    { name = "Gridlock", side = "ATK", guns = {
+        { name = "F90 SBR",  pull = 42, rapidFire = false },
+        { name = "M249 SAW", pull = 43, rapidFire = false }
+    }},
+    { name = "Nokk", side = "ATK", guns = {
+        { name = "FMG-9", pull = 34, rapidFire = false }
+    }},
+    { name = "Amaru", side = "ATK", guns = {
+        { name = "G8A1",         pull = 47, rapidFire = false },
+        { name = "SMG-11 (Sec)", pull = 45, rapidFire = false }
+    }},
+    { name = "Kali", side = "ATK", guns = {
+        { name = "SPSMG9 (Sec)",   pull = 26, rapidFire = false },
+        { name = "C75 Auto (Sec)", pull = 34, rapidFire = false }
+    }},
+    { name = "Iana", side = "ATK", guns = {
+        { name = "ARX200", pull = 40, rapidFire = false },
+        { name = "G36C",   pull = 49, rapidFire = false }
+    }},
+    { name = "Ace", side = "ATK", guns = {
+        { name = "AK-12", pull = 42, rapidFire = false }
+    }},
+    { name = "Zero", side = "ATK", guns = {
+        { name = "SC3000K", pull = 57, rapidFire = false },
+        { name = "MP7",     pull = 45, rapidFire = false }
+    }},
+    { name = "Flores", side = "ATK", guns = {
+        { name = "AR33",     pull = 40,  rapidFire = false },
+        { name = "T-95 LSW", pull = 41,  rapidFire = false },
+        { name = "SR-25",    pull = 155, rapidFire = true }
+    }},
+    { name = "Osa", side = "ATK", guns = {
+        { name = "556xi", pull = 33, rapidFire = false },
+        { name = "PDW9",  pull = 35, rapidFire = false }
+    }},
+    { name = "Sens", side = "ATK", guns = {
+        { name = "XK23",  pull = 37, rapidFire = false },
+        { name = "POF-9", pull = 35, rapidFire = false },
+        { name = "417",   pull = 90, rapidFire = true }
+    }},
+    { name = "Grim", side = "ATK", guns = {
+        { name = "552 Commando", pull = 33, rapidFire = false }
+    }},
+    { name = "Brava", side = "ATK", guns = {
+        { name = "PARA-308", pull = 31,  rapidFire = false },
+        { name = "CAMRS",    pull = 110, rapidFire = true }
+    }},
+    { name = "Ram", side = "ATK", guns = {
+        { name = "R4-C",  pull = 50, rapidFire = false },
+        { name = "LMG-E", pull = 55, rapidFire = false }
+    }},
+    { name = "Deimos", side = "ATK", guns = {
+        { name = "AK-74M", pull = 25, rapidFire = false }
+    }},
+    { name = "Rauora", side = "ATK", guns = {
+        { name = "XK23",            pull = 37, rapidFire = false },
+        { name = "417",             pull = 90, rapidFire = true },
+        { name = "M249",            pull = 32, rapidFire = false },
+        { name = "Reaper Mk2 (Sec)", pull = 31, rapidFire = false }
+    }},
+    { name = "Solid Snake", side = "ATK", guns = {
+        { name = "F2",      pull = 58, rapidFire = false },
+        { name = "PMR90A2", pull = 76, rapidFire = true }
+    }},
+    { name = "Sentry", side = "DEF", guns = {
+        { name = "Tcsg12",          pull = 360, rapidFire = true },
+        { name = "Commando 9",      pull = 28,  rapidFire = false },
+        { name = "C75 Auto (Sec)",  pull = 34,  rapidFire = false }
+    }},
+    { name = "Smoke", side = "DEF", guns = {
+        { name = "SMG-11 (Sec)", pull = 45, rapidFire = false },
+        { name = "FMG-9",        pull = 34, rapidFire = false }
+    }},
+    { name = "Mute", side = "DEF", guns = {
+        { name = "SMG-11 (Sec)", pull = 45, rapidFire = false },
+        { name = "MP5K",         pull = 34, rapidFire = false }
+    }},
+    { name = "Castle", side = "DEF", guns = {
+        { name = "UMP45", pull = 15, rapidFire = false }
+    }},
+    { name = "Pulse", side = "DEF", guns = {
+        { name = "Reaper Mk2 (Sec)", pull = 31, rapidFire = false },
+        { name = "UMP45",            pull = 15, rapidFire = false }
+    }},
+    { name = "Doc", side = "DEF", guns = {
+        { name = "MP5", pull = 24, rapidFire = false },
+        { name = "P90", pull = 29, rapidFire = false }
+    }},
+    { name = "Rook", side = "DEF", guns = {
+        { name = "MP5", pull = 24, rapidFire = false },
+        { name = "P90", pull = 29, rapidFire = false }
+    }},
+    { name = "Kapkan", side = "DEF", guns = {
+        { name = "9x19VSN", pull = 25, rapidFire = false }
+    }},
+    { name = "Tachanka", side = "DEF", guns = {
+        { name = "9x19VSN",        pull = 25, rapidFire = false },
+        { name = "DP27",           pull = 27, rapidFire = false },
+        { name = "Bearing 9 (Sec)", pull = 34, rapidFire = false }
+    }},
+    { name = "Jager", side = "DEF", guns = {
+        { name = "416-C Carbine", pull = 25, rapidFire = false }
+    }},
+    { name = "Bandit", side = "DEF", guns = {
+        { name = "MP7", pull = 29, rapidFire = false }
+    }},
+    { name = "Frost", side = "DEF", guns = {
+        { name = "9mm C1", pull = 18, rapidFire = false }
+    }},
+    { name = "Valkyrie", side = "DEF", guns = {
+        { name = "MPX", pull = 24, rapidFire = false }
+    }},
+    { name = "Caveira", side = "DEF", guns = {
+        { name = "M12", pull = 19, rapidFire = false }
+    }},
+    { name = "Echo", side = "DEF", guns = {
+        { name = "MP5SD",          pull = 24, rapidFire = false },
+        { name = "Bearing 9 (Sec)", pull = 49, rapidFire = false }
+    }},
+    { name = "Mira", side = "DEF", guns = {
+        { name = "Vector .45 ACP", pull = 33, rapidFire = false }
+    }},
+    { name = "Lesion", side = "DEF", guns = {
+        { name = "T-5 SMG", pull = 27, rapidFire = false }
+    }},
+    { name = "Ela", side = "DEF", guns = {
+        { name = "Scorpion EVO 3 A1", pull = 33, rapidFire = false }
+    }},
+    { name = "Vigil", side = "DEF", guns = {
+        { name = "K1A",            pull = 27, rapidFire = false },
+        { name = "SMG-12 (Sec)",   pull = 47, rapidFire = false },
+        { name = "C75 Auto (Sec)", pull = 34, rapidFire = false }
+    }},
+    { name = "Maestro", side = "DEF", guns = {
+        { name = "ALDA 5.56", pull = 30, rapidFire = false },
+        { name = "ACS12",     pull = 17, rapidFire = false }
+    }},
+    { name = "Alibi", side = "DEF", guns = {
+        { name = "Mx4 Storm", pull = 30, rapidFire = false },
+        { name = "ACS12",     pull = 17, rapidFire = false }
+    }},
+    { name = "Clash", side = "DEF", guns = {
+        { name = "SPSMG9 (Sec)", pull = 27, rapidFire = false }
+    }},
+    { name = "Kaid", side = "DEF", guns = {
+        { name = "Tcsg12", pull = 360, rapidFire = true },
+        { name = "AUG A3",  pull = 26,  rapidFire = false }
+    }},
+    { name = "Mozzie", side = "DEF", guns = {
+        { name = "P10 Roni",   pull = 33, rapidFire = false },
+        { name = "Commando 9", pull = 28, rapidFire = false }
+    }},
+    { name = "Warden", side = "DEF", guns = {
+        { name = "SMG-12 (Sec)", pull = 47, rapidFire = false },
+        { name = "MPX",          pull = 24, rapidFire = false }
+    }},
+    { name = "Goyo", side = "DEF", guns = {
+        { name = "Tcsg12",         pull = 360, rapidFire = true },
+        { name = "Vector .45 ACP", pull = 33,  rapidFire = false }
+    }},
+    { name = "Wamai", side = "DEF", guns = {
+        { name = "MP5K",   pull = 34, rapidFire = false },
+        { name = "AUG A2", pull = 25, rapidFire = false }
+    }},
+    { name = "Oryx", side = "DEF", guns = {
+        { name = "T-5 SMG", pull = 27, rapidFire = false }
+    }},
+    { name = "Melusi", side = "DEF", guns = {
+        { name = "MP5", pull = 24, rapidFire = false }
+    }},
+    { name = "Aruni", side = "DEF", guns = {
+        { name = "Mk 14 EBR", pull = 86, rapidFire = true },
+        { name = "P10 Roni",  pull = 33, rapidFire = false }
+    }},
+    { name = "Thunderbird", side = "DEF", guns = {
+        { name = "Spear .308",     pull = 26, rapidFire = false },
+        { name = "Bearing 9 (Sec)", pull = 49, rapidFire = false }
+    }},
+    { name = "Thorn", side = "DEF", guns = {
+        { name = "UZK50GI", pull = 24, rapidFire = false }
+    }},
+    { name = "Azami", side = "DEF", guns = {
+        { name = "9x19VSN", pull = 25, rapidFire = false }
+    }},
+    { name = "Solis", side = "DEF", guns = {
+        { name = "P90",          pull = 29, rapidFire = false },
+        { name = "SMG-11 (Sec)", pull = 48, rapidFire = false }
+    }},
+    { name = "Fenrir", side = "DEF", guns = {
+        { name = "MP7", pull = 29, rapidFire = false }
+    }},
+    { name = "Tubarao", side = "DEF", guns = {
+        { name = "AR-15.50", pull = 81, rapidFire = true },
+        { name = "MPX",      pull = 23, rapidFire = false }
+    }},
+    { name = "Denari", side = "DEF", guns = {
+        { name = "Scorpion EVO 3 A1", pull = 33, rapidFire = false }
+    }}
+}
+
+local function RenderRosterGrid(targetSide, title)
+    local indices = {}
+    for i, op in ipairs(OPERATORS) do
+        if op.side == targetSide then
+            table.insert(indices, i)
+        end
+    end
+
+    local cols = 5
+    local colWidth = 14
+    local total = #indices
+    local rows = math.ceil(total / cols)
+
+    OutputLogMessage("--- " .. title .. " ---\n")
+    for r = 1, rows do
+        local line = " "
+        for c = 1, cols do
+            local idxInTeam = ((r - 1) * cols) + c
+            if idxInTeam <= total then
+                local realIdx = indices[idxInTeam]
+                local opName = OPERATORS[realIdx].name
+                local prefix = (realIdx == currentOpIndex) and "[*]" or " . "
+                local cell = prefix .. opName
+                if #cell > (colWidth - 1) then cell = cell:sub(1, colWidth - 2) .. "." end
+                cell = cell .. string.rep(" ", colWidth - #cell)
+                line = line .. cell
+            end
+        end
+        OutputLogMessage(line .. "\n")
+    end
+    OutputLogMessage("\n")
+end
+
+local function LogStatus()
+    ClearLog()
+    local activeOp = OPERATORS[currentOpIndex]
+
+    OutputLogMessage("========================================================================\n")
+    OutputLogMessage(" SCRIPT: [%s]  |  SENS MULTIPLIER: %.2fx  |  RF KEY: [%s]\n", isEnabled and "ACTIVE" or "DISABLED", recoilMultiplier, rfKey)
+    OutputLogMessage("========================================================================\n\n")
+
+    RenderRosterGrid("ATK", "ATTACKERS")
+    RenderRosterGrid("DEF", "DEFENDERS")
+
+    OutputLogMessage("========================================================================\n")
+    OutputLogMessage(" SELECTED OPERATOR : [%s] %s\n", activeOp.side, activeOp.name)
+    OutputLogMessage(" WEAPON LOADOUT (Total: %d) :\n", #activeOp.guns)
+
+    for gIdx, gun in ipairs(activeOp.guns) do
+        local effectivePull = Round(gun.pull * recoilMultiplier)
+        local modeStr = gun.rapidFire and "DMR (RAPID FIRE)" or "FULL-AUTO RECOIL"
+        local delayStr = gun.rapidFire and string.format("Hold %d-%dms | Gap %d-%dms", minHold, maxHold, minGap, maxGap) or string.format("%d-%d ms", minDelay, maxDelay)
+
+        if gIdx == currentGunIndex then
+            OutputLogMessage("  >>> [ACTIVATED]  (%d/%d) %-15s | %-16s | Pull: %3d px | %s <<<\n",
+                gIdx, #activeOp.guns, gun.name, modeStr, effectivePull, delayStr)
+        else
+            OutputLogMessage("      [OPTION]     (%d/%d) %-15s | %-16s | Pull: %3d px | %s\n",
+                gIdx, #activeOp.guns, gun.name, modeStr, effectivePull, delayStr)
+        end
+    end
+    OutputLogMessage("========================================================================\n")
+end
+
+EnablePrimaryMouseButtonEvents(true)
+
+function OnEvent(event, arg)
+
+    if event == "MOUSE_BUTTON_PRESSED" and arg == 3 then
+        isEnabled = not isEnabled
+        LogStatus()
+    end
+
+    if event == "MOUSE_BUTTON_PRESSED" and arg == 5 then
+        if IsKeyLockOn("capslock") then
+            local currentOp = OPERATORS[currentOpIndex]
+            currentGunIndex = (currentGunIndex % #currentOp.guns) + 1
+        else
+            currentOpIndex = (currentOpIndex % #OPERATORS) + 1
+            currentGunIndex = 1
+        end
+        LogStatus()
+    end
+
+    if event == "MOUSE_BUTTON_PRESSED" and arg == 4 then
+        if IsKeyLockOn("capslock") then
+            local currentOp = OPERATORS[currentOpIndex]
+            currentGunIndex = (currentGunIndex - 2 + #currentOp.guns) % #currentOp.guns + 1
+        else
+            currentOpIndex = (currentOpIndex - 2 + #OPERATORS) % #OPERATORS + 1
+            currentGunIndex = 1
+        end
+        LogStatus()
+    end
+
+    if event == "MOUSE_BUTTON_PRESSED" and arg == 1 then
+        if isEnabled then
+            local op  = OPERATORS[currentOpIndex]
+            local gun = op.guns[currentGunIndex]
+            local effectivePull = Round(gun.pull * recoilMultiplier)
+
+            -- MODE 1: Rapid Fire via Secondary Keybind ('P')
+            if gun.rapidFire then
+                repeat
+                    PressKey(rfKey)
+                    Sleep(math.random(minHold, maxHold))
+                    ReleaseKey(rfKey)
+
+                    if effectivePull > 0 then
+                        local v = effectivePull + math.random(-vertVariance, vertVariance)
+                        local h = math.random(-horizJitter, horizJitter)
+                        MoveMouseRelative(h, v)
+                    end
+
+                    Sleep(math.random(minGap, maxGap))
+                until not IsMouseButtonPressed(1)
+
+            -- MODE 2: Full-Auto Recoil Control Only
+            else
+                repeat
+                    if effectivePull > 0 then
+                        local v = effectivePull + math.random(-vertVariance, vertVariance)
+                        local h = math.random(-horizJitter, horizJitter)
+                        MoveMouseRelative(h, v)
+                    end
+                    
+                    Sleep(math.random(minDelay, maxDelay))
+                until not IsMouseButtonPressed(1)
+            end
+        end
+    end
+
+end

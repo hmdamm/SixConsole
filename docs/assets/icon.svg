@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#24242A" />
+      <stop offset="100%" stop-color="#141416" />
+    </radialGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60CDFF" />
+      <stop offset="100%" stop-color="#0078D4" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Hexagonal/Circular Base -->
+  <circle cx="256" cy="256" r="230" fill="url(#bgGrad)" stroke="#383842" stroke-width="8" />
+
+  <!-- Tactical Reticle Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-dasharray="140 22 140 22" stroke-linecap="round" />
+
+  <!-- Inner Concentric Ring -->
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#60CDFF" stroke-width="4" stroke-opacity="0.35" />
+
+  <!-- Precision Crosshair Ticks -->
+  <line x1="256" y1="26" x2="256" y2="66" stroke="#60CDFF" stroke-width="10" stroke-linecap="round" />
+  <line x1="256" y1="446" x2="256" y2="486" stroke="#60CDFF" stroke-width="10" stroke-linecap="round" />
+  <line x1="26" y1="256" x2="66" y2="256" stroke="#60CDFF" stroke-width="10" stroke-linecap="round" />
+  <line x1="446" y1="256" x2="486" y2="256" stroke="#60CDFF" stroke-width="10" stroke-linecap="round" />
+
+  <!-- Corner Alignment Marks -->
+  <path d="M 116 116 L 140 116 M 116 116 L 116 140" fill="none" stroke="#60CDFF" stroke-width="6" stroke-opacity="0.6" stroke-linecap="round" />
+  <path d="M 396 116 L 372 116 M 396 116 L 396 140" fill="none" stroke="#60CDFF" stroke-width="6" stroke-opacity="0.6" stroke-linecap="round" />
+  <path d="M 116 396 L 140 396 M 116 396 L 116 372" fill="none" stroke="#60CDFF" stroke-width="6" stroke-opacity="0.6" stroke-linecap="round" />
+  <path d="M 396 396 L 372 396 M 396 396 L 396 372" fill="none" stroke="#60CDFF" stroke-width="6" stroke-opacity="0.6" stroke-linecap="round" />
+
+  <!-- Center Stylized '6' Numeral -->
+  <text x="256" y="328" font-family="'Segoe UI', -apple-system, sans-serif" font-size="220" font-weight="900" fill="#FFFFFF" text-anchor="middle">6</text>
+</svg>
