@@ -21,6 +21,7 @@
     <SelfContained>false</SelfContained>
     <PublishAot>false</PublishAot>
     <UseRidGraph>false</UseRidGraph>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

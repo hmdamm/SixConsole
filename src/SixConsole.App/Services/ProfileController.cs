@@ -15,15 +15,34 @@ public sealed class ProfileController : IDisposable
 
     public event EventHandler<EngineEventArgs>? StateChanged;
 
+    private bool? _lastLoggedEnabled;
+    private EngineStatus? _lastLoggedStatus;
+    private string? _lastLoggedError;
+    private string? _lastLoggedOp;
+    private string? _lastLoggedWeapon;
+
     public ProfileController(AppServices services)
     {
-        _engine = new InputEngine(services.Selection, () => services.Settings);
+        _engine = new InputEngine(services.Selection, () => services.Settings, new InputEngineOptions { CheckPhysicalKeyState = true });
         _engine.StateChanged += OnEngineStateChanged;
     }
 
     private void OnEngineStateChanged(object? sender, EngineEventArgs e)
     {
-        Log($"engine: enabled={e.Snapshot.Enabled} status={e.Snapshot.Status} op={e.Snapshot.Operator?.Name} weapon={e.Snapshot.Weapon?.Name} err={e.Snapshot.LastError}");
+        var snap = e.Snapshot;
+        if (_lastLoggedEnabled != snap.Enabled ||
+            _lastLoggedStatus != snap.Status ||
+            _lastLoggedError != snap.LastError ||
+            _lastLoggedOp != snap.Operator?.Id ||
+            _lastLoggedWeapon != snap.Weapon?.Name)
+        {
+            _lastLoggedEnabled = snap.Enabled;
+            _lastLoggedStatus = snap.Status;
+            _lastLoggedError = snap.LastError;
+            _lastLoggedOp = snap.Operator?.Id;
+            _lastLoggedWeapon = snap.Weapon?.Name;
+            Log($"engine: enabled={snap.Enabled} status={snap.Status} op={snap.Operator?.Name} weapon={snap.Weapon?.Name} err={snap.LastError}");
+        }
         StateChanged?.Invoke(this, e);
     }
 
@@ -60,16 +79,32 @@ public sealed class ProfileController : IDisposable
 
     public void Dispose() => _engine.Dispose();
 
-    private void Log(string line)
+    private static readonly object LogGate = new();
+    private const long MaxLogSizeBytes = 512 * 1024; // 512 KB hard limit
+
+    private static void Log(string line)
     {
-        try
+        Task.Run(() =>
         {
-            File.AppendAllText(SettingsStore.LogFilePath, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}{Environment.NewLine}");
-        }
-        catch
-        {
-            // diagnostics must never break the app
-        }
+            try
+            {
+                lock (LogGate)
+                {
+                    var file = new FileInfo(SettingsStore.LogFilePath);
+                    if (file.Exists && file.Length > MaxLogSizeBytes)
+                    {
+                        var backup = SettingsStore.LogFilePath + ".old";
+                        try { File.Delete(backup); File.Move(SettingsStore.LogFilePath, backup); }
+                        catch { File.Delete(SettingsStore.LogFilePath); }
+                    }
+                    File.AppendAllText(SettingsStore.LogFilePath, $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {line}{Environment.NewLine}");
+                }
+            }
+            catch
+            {
+                // diagnostics must never break the app
+            }
+        });
     }
 }
 

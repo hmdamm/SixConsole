@@ -42,6 +42,9 @@ public sealed class InputEngine : IDisposable
 {
     private readonly object _gate = new();
     private Thread? _hookThread;
+    private Thread? _workerThread;
+    private readonly AutoResetEvent _wakeWorker = new(false);
+    private volatile bool _workerRunning;
     private nint _mouseHook;
     private volatile bool _disposed;
     private volatile bool _isEnabled;
@@ -110,7 +113,7 @@ public sealed class InputEngine : IDisposable
             if (_disposed) throw new ObjectDisposedException(nameof(InputEngine));
             if (_hookThread is { IsAlive: true }) return;
 
-            _runCts = new CountDownCts();
+            EnsureWorkerStarted();
             _hookThread = new Thread(HookLoop)
             {
                 Name = "SixConsole.InputHook",
@@ -158,8 +161,7 @@ public sealed class InputEngine : IDisposable
 
     private void CancelActiveLoop()
     {
-        var cts = _runCts;
-        cts.Cancel();
+        _runCts.Cancel();
     }
 
     /// <summary>Engine shutdown; stops hooks, cancels loops, releases any held keys.</summary>
@@ -167,7 +169,13 @@ public sealed class InputEngine : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
+        _workerRunning = false;
         EmergencyStop();
+        try
+        {
+            _wakeWorker.Set();
+        }
+        catch { }
         try
         {
             var threadId = _hookThreadId; // 0 = hook thread not started; nothing to signal
@@ -177,9 +185,55 @@ public sealed class InputEngine : IDisposable
         {
             // hook thread may have already terminated
         }
-        if (_mouseHook != 0) Win32.UnhookWindowsHookEx(_mouseHook);
+        if (_mouseHook != 0)
+        {
+            Win32.UnhookWindowsHookEx(_mouseHook);
+            _mouseHook = 0;
+        }
+        _runCts.Dispose();
+        _wakeWorker.Dispose();
         Status = EngineStatus.StoppedForShutdown;
         PublishSnapshot(force: true);
+    }
+
+    private void EnsureWorkerStarted()
+    {
+        lock (_gate)
+        {
+            if (_disposed) return;
+            if (_workerThread is { IsAlive: true }) return;
+            _workerRunning = true;
+            _workerThread = new Thread(WorkerLoop)
+            {
+                Name = "SixConsole.WorkerLoop",
+                IsBackground = true,
+            };
+            _workerThread.Start();
+        }
+    }
+
+    private void WorkerLoop()
+    {
+        while (!_disposed && _workerRunning)
+        {
+            try
+            {
+                _wakeWorker.WaitOne();
+            }
+            catch (ThreadAbortException) { break; }
+            catch { }
+
+            if (_disposed || !_workerRunning) break;
+
+            if (_leftButtonDown && IsEnabled && !_runCts.IsCancellationRequested)
+            {
+                var op = _selection.Operator;
+                var weapon = _selection.Weapon;
+                var snapshotSettings = _settingsProvider();
+                int effectivePull = snapshotSettings.EffectivePull(weapon);
+                RunLoop(op, weapon, effectivePull, _runCts);
+            }
+        }
     }
 
     private void HookLoop()
@@ -200,9 +254,10 @@ public sealed class InputEngine : IDisposable
             Status = EngineStatus.Running;
 
             // Message pump keeps the hook thread alive and lets PostThreadMessage control exit.
-            while (Win32.GetMessage(out var msg, 0, 0, 0))
+            while (true)
             {
-                if (msg.message == Win32.WM_QUIT_USER || _disposed) break;
+                int res = Win32.GetMessage(out var msg, 0, 0, 0);
+                if (res <= 0 || msg.message == Win32.WM_QUIT_USER || _disposed) break;
             }
         }
         catch (Exception ex)
@@ -223,34 +278,41 @@ public sealed class InputEngine : IDisposable
 
     private uint _hookThreadId;
 
-    private nint OnMouseHook(int nCode, nint wParam, nint lParam)
+    private unsafe nint OnMouseHook(int nCode, nint wParam, nint lParam)
     {
-        if (nCode >= 0)
+        if (nCode >= 0 && lParam != 0)
         {
-            var info = Marshal.PtrToStructure<Win32.MSLLHOOKSTRUCT>(lParam);
-            // Ignore our own synthetic output (SendInput) via marker + the injected flag;
-            // this guarantees no recursion, per plan §7.
-            bool injected = (info.flags & Win32.LLMHF_INJECTED) != 0;
-            if (!injected)
+            try
             {
-                var msg = (uint)wParam;
-                switch (msg)
+                var pInfo = (Win32.MSLLHOOKSTRUCT*)lParam;
+                // Ignore our own synthetic output (SendInput) via marker + the injected flag;
+                // this guarantees no recursion, per plan §7.
+                bool injected = (pInfo->flags & Win32.LLMHF_INJECTED) != 0 || pInfo->dwExtraInfo == Win32.INJECTED_EXTRAINFO;
+                if (!injected)
                 {
-                    case Win32.WM_LBUTTONDOWN:
-                        _leftButtonDown = true;
-                        OnLeftDown();
-                        break;
-                    case Win32.WM_LBUTTONUP:
-                        _leftButtonDown = false;
-                        OnLeftUp();
-                        break;
-                    case Win32.WM_MBUTTONDOWN:
-                        HandleButtonDown(MouseButton.Middle);
-                        break;
-                    case Win32.WM_XBUTTONDOWN:
-                        HandleButtonDown(HiWordFromMouseData(info.mouseData) == 1 ? MouseButton.XButton1Back : MouseButton.XButton2Forward);
-                        break;
+                    var msg = (uint)wParam;
+                    switch (msg)
+                    {
+                        case Win32.WM_LBUTTONDOWN:
+                            _leftButtonDown = true;
+                            OnLeftDown();
+                            break;
+                        case Win32.WM_LBUTTONUP:
+                            _leftButtonDown = false;
+                            OnLeftUp();
+                            break;
+                        case Win32.WM_MBUTTONDOWN:
+                            HandleButtonDown(MouseButton.Middle);
+                            break;
+                        case Win32.WM_XBUTTONDOWN:
+                            HandleButtonDown(HiWordFromMouseData(pInfo->mouseData) == 1 ? MouseButton.XButton1Back : MouseButton.XButton2Forward);
+                            break;
+                    }
                 }
+            }
+            catch
+            {
+                // Hook callbacks must never throw across native boundaries
             }
         }
         return Win32.CallNextHookEx(_mouseHook, nCode, wParam, lParam);
@@ -283,29 +345,14 @@ public sealed class InputEngine : IDisposable
     private void OnLeftDown()
     {
         if (!IsEnabled) return;
-        var cts = _runCts;
-        cts.Cancel(); // cancel any previous (stale) loop defensively
-        _runCts = new CountDownCts();
-        var snapshotSettings = _settingsProvider();
-        var op = _selection.Operator;
-        var weapon = _selection.Weapon;
-        int effectivePull = snapshotSettings.EffectivePull(weapon);
-        var runCts = _runCts;
-        var thread = new Thread(() => RunLoop(op, weapon, effectivePull, runCts))
-        {
-            Name = "SixConsole.RunLoop",
-            IsBackground = true,
-        };
-        thread.Start();
-        PublishSnapshot(force: true);
+        EnsureWorkerStarted();
+        _runCts.Reset();
+        _wakeWorker.Set();
     }
 
     private void OnLeftUp()
     {
-        if (!IsEnabled) return;
         _runCts.Cancel();
-        _runCts = new CountDownCts(); // fresh handles for the next press
-        PublishSnapshot(force: true);
     }
 
     // Regression-test entry points: mirror the physical hook path (hook → state → handler)
@@ -322,6 +369,17 @@ public sealed class InputEngine : IDisposable
     {
         _leftButtonDown = false;
         OnLeftUp();
+    }
+
+    private bool IsButtonStillDown()
+    {
+        if (!_leftButtonDown) return false;
+        if (_options.IsPhysicalDown != null) return _options.IsPhysicalDown();
+        if (_options.CheckPhysicalKeyState)
+        {
+            return (Win32.GetAsyncKeyState(Win32.VK_LBUTTON) & 0x8000) != 0;
+        }
+        return true;
     }
 
     /// <summary>
@@ -341,7 +399,7 @@ public sealed class InputEngine : IDisposable
             if (mode == InputMode.RapidFire)
             {
                 byte keyCode = _options.KeyCodeOf(settings.RfKey);
-                while (IsEnabled && !cts.IsCancellationRequested && _leftButtonDown)
+                while (IsEnabled && !cts.IsCancellationRequested && IsButtonStillDown())
                 {
                     _options.SendKeyDown(keyCode);
                     if (!SleepChecked(rnd.Next(settings.Hold.Min, settings.Hold.Max + 1), cts)) break;
@@ -359,7 +417,7 @@ public sealed class InputEngine : IDisposable
             }
             else
             {
-                while (IsEnabled && !cts.IsCancellationRequested && _leftButtonDown)
+                while (IsEnabled && !cts.IsCancellationRequested && IsButtonStillDown())
                 {
                     if (effectivePull > 0)
                     {
@@ -373,7 +431,14 @@ public sealed class InputEngine : IDisposable
         }
         finally
         {
-            _options.SendKeyUp(_options.KeyCodeOf(settings.RfKey)); // never leave the rf key stuck
+            try
+            {
+                _options.SendKeyUp(_options.KeyCodeOf(settings.RfKey)); // never leave the rf key stuck
+            }
+            catch
+            {
+                // best effort release
+            }
         }
     }
 
@@ -381,7 +446,7 @@ public sealed class InputEngine : IDisposable
     private static bool SleepChecked(int ms, CountDownCts cts)
     {
         if (ms <= 0) return !cts.IsCancellationRequested;
-        return !cts.WaitHandle.WaitOne(ms);
+        return !cts.Wait(ms);
     }
 
     public EngineSnapshot Snapshot()
@@ -413,7 +478,7 @@ public sealed class InputEngine : IDisposable
 }
 
 /// <summary>A minimal countdown without threads, exposing WaitHandle semantics.</summary>
-public sealed class CountDownCts
+public sealed class CountDownCts : IDisposable
 {
     private readonly ManualResetEventSlim _evt = new(false);
     private volatile bool _cancelled;
@@ -424,9 +489,22 @@ public sealed class CountDownCts
         _evt.Set();
     }
 
+    public void Reset()
+    {
+        _cancelled = false;
+        _evt.Reset();
+    }
+
     public bool IsCancellationRequested => _cancelled;
 
+    public bool Wait(int ms) => _evt.Wait(ms);
+
     public WaitHandle WaitHandle => _evt.WaitHandle;
+
+    public void Dispose()
+    {
+        _evt.Dispose();
+    }
 }
 
 /// <summary>Point at which the platform adapter injects synthetic events. Test doubles override these.</summary>
@@ -436,6 +514,8 @@ public sealed class InputEngineOptions
     public Action<byte> SendKeyDown { get; set; } = k => InputInjector.SendKey(k, down: true);
     public Action<byte> SendKeyUp { get; set; } = k => InputInjector.SendKey(k, down: false);
     public Action<int, int> SendRelativeMove { get; set; } = (dx, dy) => InputInjector.SendRelativeMove(dx, dy);
+    public bool CheckPhysicalKeyState { get; set; } = false;
+    public Func<bool>? IsPhysicalDown { get; set; }
 
     public static byte DefaultKeyCodeOf(string key)
     {

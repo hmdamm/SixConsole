@@ -30,7 +30,10 @@ public sealed partial class ShellView : UserControl
     private void RefreshStatusBar()
     {
         var snap = App.Instance?.Controller?.Snapshot();
-        if (snap != null) StatusBar.Update(snap);
+        if (snap != null)
+        {
+            App.DispatchToUi(() => StatusBar.Update(snap));
+        }
     }
 
     private void OnEngineState(object? sender, EngineEventArgs e)

@@ -31,6 +31,7 @@ public partial class App : Application
         Services = new AppServices(SettingsStore);
         Microsoft.UI.Xaml.Application.Current.UnhandledException += OnXamlUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         Log($"App ctor complete (secondInstance={_secondInstance})");
     }
 
@@ -64,10 +65,22 @@ public partial class App : Application
         Log("window activated");
     }
 
+    private void OnProcessExit(object? sender, EventArgs e)
+    {
+        try { Controller?.Dispose(); } catch { }
+    }
+
     private void OnXamlUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
-        => Log($"XAML UNHANDLED: {e.Message}\n{e.Exception}");
+    {
+        Log($"XAML UNHANDLED: {e.Message}\n{e.Exception}");
+        try { Controller?.EmergencyStop(); Controller?.Dispose(); } catch { }
+    }
+
     private void OnDomainUnhandledException(object? sender, System.UnhandledExceptionEventArgs e)
-        => Log($"DOMAIN UNHANDLED: {e.ExceptionObject}");
+    {
+        Log($"DOMAIN UNHANDLED: {e.ExceptionObject}");
+        try { Controller?.EmergencyStop(); Controller?.Dispose(); } catch { }
+    }
 
     [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
     private static extern int MessageBoxW(nint hWnd, string text, string caption, uint type);

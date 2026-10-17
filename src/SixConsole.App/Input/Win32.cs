@@ -17,6 +17,7 @@ internal static class Win32
     public const int WM_MBUTTONUP = 0x0208;
     public const int WM_XBUTTONDOWN = 0x020B;
     public const int WM_XBUTTONUP = 0x020C;
+    public const ushort VK_LBUTTON = 0x01;
     public const ushort VK_CAPITAL = 0x14;
     public const int LLKHF_INJECTED = 0x10;
     public const int LLMHF_INJECTED = 0x1;
@@ -66,9 +67,11 @@ internal static class Win32
     [DllImport("user32.dll")]
     public static extern short GetKeyState(int nVirtKey);
 
+    [DllImport("user32.dll")]
+    public static extern short GetAsyncKeyState(int vKey);
+
     [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool GetMessage(out MSG lpMsg, nint hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+    public static extern int GetMessage(out MSG lpMsg, nint hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

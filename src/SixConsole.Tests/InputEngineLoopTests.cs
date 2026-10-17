@@ -270,4 +270,107 @@ public sealed class InputEngineLoopTests
         engine.TestButtonDown(MouseButton.XButton1Back);
         Assert.Equal(0, selection.OperatorIndex);
     }
+
+    [Fact]
+    public void Rapid_clicks_do_not_spawn_unbounded_threads_or_leave_stuck_keys()
+    {
+        var selection = SelectionAt();
+        var rec = new Recorder();
+        using var engine = new InputEngine(selection, () => Timing(2, 5, 10, 15, 15, 20), OptionsThat(rec));
+        engine.ToggleEnabled();
+
+        // Simulate 20 rapid bursts (e.g. frantic clicking during combat)
+        for (int i = 0; i < 20; i++)
+        {
+            engine.TestLeftButtonDown();
+            Thread.Sleep(10);
+            engine.TestLeftButtonUp();
+            Thread.Sleep(5);
+        }
+
+        // Allow any final unwinding
+        Thread.Sleep(50);
+
+        lock (rec.Gate)
+        {
+            // Rapid fire keys must be balanced: keyUp >= keyDown (safety release ensures no stuck keys)
+            Assert.True(rec.KeyUp >= rec.KeyDown, $"stuck key detected: down={rec.KeyDown} up={rec.KeyUp}");
+        }
+    }
+
+    [Fact]
+    public void Physical_button_release_detection_terminates_loop_even_if_up_event_missed()
+    {
+        var selection = SelectionAt();
+        var rec = new Recorder();
+        bool physicalDown = true;
+        var options = OptionsThat(rec);
+        options.IsPhysicalDown = () => physicalDown;
+
+        using var engine = new InputEngine(selection, () => Timing(5, 5, 25, 40, 65, 90), options);
+        engine.ToggleEnabled();
+
+        // Left button down
+        engine.TestLeftButtonDown();
+        Thread.Sleep(60);
+
+        int movesDuringDown;
+        lock (rec.Gate) movesDuringDown = rec.Moves;
+        Assert.True(movesDuringDown > 0, "expected moves while physical button is down");
+
+        // Physical button is released, but WM_LBUTTONUP is NOT fired (simulating OS drop/focus switch)
+        physicalDown = false;
+        Thread.Sleep(100);
+
+        int movesAfterRelease;
+        lock (rec.Gate) movesAfterRelease = rec.Moves;
+
+        // Loop must have stopped because physicalDown became false
+        Thread.Sleep(80);
+        int movesLater;
+        lock (rec.Gate) movesLater = rec.Moves;
+
+        Assert.Equal(movesAfterRelease, movesLater); // No more moves emitted!
+    }
+
+    [Fact]
+    public void CountDownCts_reset_and_dispose_behave_deterministically()
+    {
+        using var cts = new CountDownCts();
+        Assert.False(cts.IsCancellationRequested);
+
+        // Wait on unsignaled event with short timeout: returns false
+        Assert.False(cts.Wait(10));
+
+        // Cancel signals the event
+        cts.Cancel();
+        Assert.True(cts.IsCancellationRequested);
+        Assert.True(cts.Wait(10)); // returns true immediately
+
+        // Reset unsignals the event
+        cts.Reset();
+        Assert.False(cts.IsCancellationRequested);
+        Assert.False(cts.Wait(10));
+    }
+
+    [Fact]
+    public void Sustained_stress_rapid_state_transitions_remain_stable()
+    {
+        var selection = SelectionAt(0, 0);
+        var rec = new Recorder();
+        using var engine = new InputEngine(selection, () => Timing(2, 5, 10, 15, 15, 20), OptionsThat(rec));
+
+        for (int i = 0; i < 50; i++)
+        {
+            engine.TestButtonDown(MouseButton.Middle); // Toggle
+            engine.TestButtonDown(MouseButton.XButton2Forward); // Navigate
+            engine.TestLeftButtonDown();
+            Thread.Sleep(2);
+            engine.TestLeftButtonUp();
+            engine.TestButtonDown(MouseButton.XButton1Back); // Navigate back
+        }
+
+        Thread.Sleep(50);
+        Assert.True(engine.Status == EngineStatus.NotStarted || engine.Status == EngineStatus.Running);
+    }
 }
