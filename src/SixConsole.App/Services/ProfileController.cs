@@ -23,7 +23,7 @@ public sealed class ProfileController : IDisposable
 
     public ProfileController(AppServices services)
     {
-        _engine = new InputEngine(services.Selection, () => services.Settings, new InputEngineOptions { CheckPhysicalKeyState = true });
+        _engine = new InputEngine(services.Selection, () => services.Settings);
         _engine.StateChanged += OnEngineStateChanged;
     }
 

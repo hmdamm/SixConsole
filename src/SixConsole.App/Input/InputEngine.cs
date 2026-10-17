@@ -225,13 +225,18 @@ public sealed class InputEngine : IDisposable
 
             if (_disposed || !_workerRunning) break;
 
-            if (_leftButtonDown && IsEnabled && !_runCts.IsCancellationRequested)
+            if (IsEnabled)
             {
                 var op = _selection.Operator;
                 var weapon = _selection.Weapon;
                 var snapshotSettings = _settingsProvider();
-                int effectivePull = snapshotSettings.EffectivePull(weapon);
-                RunLoop(op, weapon, effectivePull, _runCts);
+                var mode = snapshotSettings.ModeFor(weapon);
+
+                if (_leftButtonDown || mode == InputMode.RapidFire)
+                {
+                    int effectivePull = snapshotSettings.EffectivePull(weapon);
+                    RunLoop(op, weapon, effectivePull, _runCts);
+                }
             }
         }
     }
@@ -399,13 +404,15 @@ public sealed class InputEngine : IDisposable
             if (mode == InputMode.RapidFire)
             {
                 byte keyCode = _options.KeyCodeOf(settings.RfKey);
-                while (IsEnabled && !cts.IsCancellationRequested && IsButtonStillDown())
+                do
                 {
+                    if (!IsEnabled) break;
                     _options.SendKeyDown(keyCode);
-                    if (!SleepChecked(rnd.Next(settings.Hold.Min, settings.Hold.Max + 1), cts)) break;
+                    var holdMs = rnd.Next(settings.Hold.Min, settings.Hold.Max + 1);
+                    if (holdMs > 0) Thread.Sleep(holdMs);
                     _options.SendKeyUp(keyCode);
 
-                    if (effectivePull > 0 && !cts.IsCancellationRequested)
+                    if (effectivePull > 0 && IsEnabled)
                     {
                         var v = effectivePull + rnd.Next(-settings.VertVariance, settings.VertVariance + 1);
                         var h = rnd.Next(-settings.HorizJitter, settings.HorizJitter + 1);
@@ -414,6 +421,7 @@ public sealed class InputEngine : IDisposable
 
                     if (!SleepChecked(rnd.Next(settings.Gap.Min, settings.Gap.Max + 1), cts)) break;
                 }
+                while (IsEnabled && !cts.IsCancellationRequested && IsButtonStillDown());
             }
             else
             {

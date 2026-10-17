@@ -373,4 +373,26 @@ public sealed class InputEngineLoopTests
         Thread.Sleep(50);
         Assert.True(engine.Status == EngineStatus.NotStarted || engine.Status == EngineStatus.Running);
     }
+
+    [Fact]
+    public void RapidFire_single_tap_click_fires_complete_burst_and_applies_recoil_move()
+    {
+        var striker = Operators.First(o => o.Name == "Striker");
+        var selection = new SelectionModel(Operators, IndexOf(striker), 2); // SR-25 (rapid fire)
+        var rec = new Recorder();
+        using var engine = new InputEngine(selection, () => Timing(2, 5, 10, 10, 10, 10), OptionsThat(rec));
+        engine.ToggleEnabled();
+
+        // Simulate an immediate tap click (down immediately followed by up, typical 10-20ms physical tap)
+        engine.TestLeftButtonDown();
+        engine.TestLeftButtonUp();
+        Thread.Sleep(80);
+
+        int down, up, moves;
+        lock (rec.Gate) { down = rec.KeyDown; up = rec.KeyUp; moves = rec.Moves; }
+        Assert.Equal(1, down); // exactly one burst fired
+        Assert.True(up >= down, "rfKey must be released");
+        Assert.Equal(1, moves); // recoil move must be applied for the shot
+    }
 }
+
