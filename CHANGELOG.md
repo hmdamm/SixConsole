@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-10-22
+
+### Added
+- **User-Configurable Keyboard Shortcuts**:
+  - Configurable in-app shortcuts for benign actions: Toggle Profile (`F10`), View Navigation (`Ctrl+1` Profile, `Ctrl+2` Settings, `Ctrl+3` Help), Operator Navigation (`Ctrl+Up`/`Ctrl+Down`), and Weapon Navigation (`Ctrl+Left`/`Ctrl+Right`).
+  - Interactive shortcut recorder in Settings with native key capture, conflict detection, OS-reserved key safeguards (Escape, Alt+Tab, Alt+F4, Ctrl+Alt+Del), Escape-to-cancel, and one-click Reset to Defaults.
+  - Centralized `ShortcutService` handling clean dispatch, registration, and unregistration lifecycle.
+- **Safe Configuration Import (JSON Schema v2)**:
+  - Strictly allowlisted, non-executable JSON importer for benign application preferences (display labels, theme, UI shortcuts).
+  - Explicit validation rejecting scripts, recoil overrides, rapid-fire parameters, and arbitrary input automation tokens.
+  - File size guard (64 KB ceiling) and transactional import with interactive preview dialog and rollback on failure.
+- **Settings Store Schema v2 & Resilience**:
+  - Upgraded settings store with schema versioning (`CurrentSchemaVersion = 2`) and deterministic v1-to-v2 migration preserving all existing user settings.
+  - Atomic JSON file writing via temporary file replacement (`settings.json.tmp` -> `settings.json`) paired with automated backup (`settings.json.bak`) and corruption recovery.
+- **Comprehensive Test Suite**:
+  - Added 24 automated unit and regression tests in `ShortcutServiceTests`, `SafeConfigImportTests`, and `SettingsMigrationTests`, expanding test coverage to 83 passing tests.
+
 ## [1.0.0] - 2026-10-17
 
 ### Added

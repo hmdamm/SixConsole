@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/Platform-Windows%2011%20%7C%2010%20x64-0078D4?logo=windows&logoColor=white" alt="Platform: Windows" />
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white" alt=".NET 10" />
   <img src="https://img.shields.io/badge/UI-WinUI%203%20%2B%20Windows%20App%20SDK%201.8-0078D4" alt="WinUI 3" />
-  <img src="https://img.shields.io/badge/Tests-59%20Passing-success" alt="Tests: 59 Passing" />
+  <img src="https://img.shields.io/badge/Tests-83%20Passing-success" alt="Tests: 83 Passing" />
   <img src="https://img.shields.io/badge/No%20Admin-Required-brightgreen" alt="No Admin Required" />
   <img src="https://img.shields.io/badge/Telemetry-Zero-lightgrey" alt="Zero Telemetry" />
 </p>
@@ -90,6 +90,10 @@ The default bindings faithfully mirror the original script's ergonomic workflow:
 | **Mouse Button 4 (Back)** | **Previous Operator / Weapon** | Go to previous operator (resets weapon to 1). While **Caps Lock is ON**, goes to previous weapon for current operator. |
 | **Hold Left Mouse Button** | **Execute Recoil / Rapid Fire** | Applies recoil pull and/or rapid-fire bursts while held; stops immediately on release. |
 | **Caps Lock** | **Modifier Switch** | Switches MB4 and MB5 between Operator navigation and Weapon navigation. |
+| **F10** *(Configurable)* | **Toggle Profile Active** | In-app keyboard shortcut to toggle active profile status. |
+| **Ctrl + 1 / 2 / 3** *(Configurable)* | **Direct View Navigation** | Switch views directly: Profile (`Ctrl+1`), Settings (`Ctrl+2`), Help (`Ctrl+3`). |
+| **Ctrl + Up / Down** *(Configurable)* | **Cycle Operators** | Navigate to previous or next operator. |
+| **Ctrl + Left / Right** *(Configurable)* | **Cycle Weapons** | Navigate to previous or next weapon. |
 | **Titlebar STOP Button** | **Emergency Stop** | Immediately cancels all background worker loops, releases held keys, and disables the profile. |
 
 ---
@@ -123,7 +127,7 @@ Clone the repository and build the project using the .NET SDK:
 git clone https://github.com/hmdamm/SixConsole.git
 cd SixConsole
 
-# Run the test suite to verify data and platform integrity (59 tests)
+# Run the test suite to verify data and platform integrity (83 tests)
 dotnet test src/SixConsole.Tests
 
 # Build the application

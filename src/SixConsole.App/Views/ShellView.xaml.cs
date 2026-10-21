@@ -47,6 +47,21 @@ public sealed partial class ShellView : UserControl
     /// <summary>Forces one status refresh (used after in-place interactions like STOP).</summary>
     public void SyncFromEngine() => RefreshStatusBar();
 
+    public void NavigateTo(string tag)
+    {
+        App.DispatchToUi(() =>
+        {
+            foreach (var item in Nav.MenuItems)
+            {
+                if (item is NavigationViewItem nvi && (nvi.Tag as string) == tag)
+                {
+                    Nav.SelectedItem = nvi;
+                    break;
+                }
+            }
+        });
+    }
+
     private void OnNavSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         var tag = (args.SelectedItemContainer?.Tag as string) ?? "profile";

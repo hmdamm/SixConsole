@@ -1,3 +1,4 @@
+using SixConsole.App.Services.Shortcuts;
 using SixConsole.Profile;
 
 namespace SixConsole.App.Services;
@@ -12,6 +13,7 @@ public sealed class AppServices
     public SelectionModel Selection { get; }
     public ProfileSettings Settings { get; private set; }
     public SettingsStore.PersistedSettings Persisted { get; private set; }
+    public IShortcutService Shortcuts { get; }
 
     /// <summary>Raised after <see cref="ApplySettings"/> so open views can refresh without
     /// waiting for engine events (engine events don't fire on Save).</summary>
@@ -29,6 +31,7 @@ public sealed class AppServices
         int weaponIndex = Clamp(Persisted.LastWeaponIndex, ops[opIndex].Weapons.Count);
         Selection = new SelectionModel(ops, opIndex, weaponIndex);
         Settings = BuildSettingsOrDefaults();
+        Shortcuts = new ShortcutService(Persisted.Shortcuts.Select(s => s.ToBinding()));
         Selection.Changed += OnSelectionChanged;
     }
 
@@ -52,7 +55,7 @@ public sealed class AppServices
 
     private static int Clamp(int idx, int count) => Math.Clamp(idx, 0, count - 1);
 
-    private SettingsStore.PersistedSettings SnapshotPersisted()
+    public SettingsStore.PersistedSettings SnapshotPersisted()
     {
         lock (_persistGate)
         {
@@ -63,6 +66,7 @@ public sealed class AppServices
     /// <summary>Defensive copy — writers (view-models, engine thread) never share the live instance.</summary>
     private static SettingsStore.PersistedSettings Clone(SettingsStore.PersistedSettings s) => new()
     {
+        SchemaVersion = s.SchemaVersion,
         RecoilMultiplier = s.RecoilMultiplier,
         VertVariance = s.VertVariance,
         HorizJitter = s.HorizJitter,
@@ -77,6 +81,16 @@ public sealed class AppServices
         LastOperatorIndex = s.LastOperatorIndex,
         LastWeaponIndex = s.LastWeaponIndex,
         RestoreLastSelection = s.RestoreLastSelection,
+        Shortcuts = s.Shortcuts.Select(x => new SettingsStore.PersistedShortcut
+        {
+            ActionId = x.ActionId,
+            ActionName = x.ActionName,
+            Key = x.Key,
+            VirtualKey = x.VirtualKey,
+            Modifiers = x.Modifiers,
+            Scope = x.Scope,
+            IsEnabled = x.IsEnabled,
+        }).ToList(),
     };
 
     private void OnSelectionChanged()
@@ -125,6 +139,40 @@ public sealed class AppServices
             Persisted.GapMax = newSettings.Gap.Max;
         }
         SettingsStore.Save(SnapshotPersisted());
+        SettingsApplied?.Invoke();
+    }
+
+    public bool ApplyShortcuts(IEnumerable<ShortcutBinding> bindings, out string error)
+    {
+        if (!Shortcuts.UpdateBindings(bindings, out error))
+        {
+            return false;
+        }
+
+        lock (_persistGate)
+        {
+            Persisted.Shortcuts = Shortcuts.CurrentBindings
+                .Select(SettingsStore.PersistedShortcut.FromBinding)
+                .ToList();
+        }
+        SettingsStore.Save(SnapshotPersisted());
+        SettingsApplied?.Invoke();
+        return true;
+    }
+
+    public void ReloadPersisted()
+    {
+        lock (_persistGate)
+        {
+            Persisted = SettingsStore.Load();
+            var ops = Operators;
+            int opIndex = Clamp(Persisted.LastOperatorIndex, ops.Count);
+            int weaponIndex = Clamp(Persisted.LastWeaponIndex, ops[opIndex].Weapons.Count);
+            Selection.SelectOperator(ops[opIndex].Id);
+            Selection.SelectWeapon(ops[opIndex], weaponIndex + 1);
+            Settings = BuildSettingsOrDefaults();
+            Shortcuts.UpdateBindings(Persisted.Shortcuts.Select(s => s.ToBinding()), out _);
+        }
         SettingsApplied?.Invoke();
     }
 }
